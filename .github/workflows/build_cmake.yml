@@ -1,4 +1,4 @@
-name: x86_64 and i686 release builds
+name: MinGW x86_64 posix seh ucrt
 
 on: [push, pull_request]
 
