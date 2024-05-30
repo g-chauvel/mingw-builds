@@ -1,0 +1,26 @@
+From e03c152987a013d3cecc0a1e057fd5d746f75f1e Mon Sep 17 00:00:00 2001
+From: Guillaume CHAUVEL <guillaume.chauvel@gmail.com>
+Date: Thu, 30 May 2024 15:10:07 +0200
+Subject: [PATCH] make LD deterministic (BFD)
+
+---
+ bfd/opncls.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/bfd/opncls.c b/bfd/opncls.c
+index a0a5c40fba8..1ca0948288a 100644
+--- a/bfd/opncls.c
++++ b/bfd/opncls.c
+@@ -116,6 +116,9 @@ _bfd_new_bfd (void)
+ 
+   nbfd->archive_plugin_fd = -1;
+ 
++  if (getenv ("DETERMINISTIC") != NULL)
++    nbfd->flags |= BFD_DETERMINISTIC_OUTPUT;
++
+   return nbfd;
+ }
+ 
+-- 
+2.45.1.windows.1
+
