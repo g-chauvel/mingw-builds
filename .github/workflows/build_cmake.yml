@@ -1,19 +1,19 @@
-name: MinGW x86_64 posix seh ucrt
+name: x86_64 and i686 release builds
 
 on: [push, pull_request]
 
 jobs:
   build:
     name: ${{ matrix.config.name }}
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
         config:
         - {
             name: "x86_64 posix seh ucrt",
-            artifact: "x86_64-14.2.0-release-posix-seh-ucrt-rt_v12-rev0.7z",
-            build_cmd: "--mode=gcc-14.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v12 --threads=posix --exceptions=seh --arch=x86_64 --bin-compress --enable-languages=c,c++,fortran --with-default-msvcrt=ucrt --logviewer-command=cat"
+            artifact: "x86_64-15.2.0-release-posix-seh-ucrt-rt_v13-rev0.7z",
+            build_cmd: "--mode=gcc-15.2.0 --buildroot=/c/buildroot --jobs=4 --rev=0 --rt-version=v13 --threads=posix --exceptions=seh --arch=x86_64 --bin-compress --enable-languages=c,c++,fortran --with-default-msvcrt=ucrt --logviewer-command=cat"
           }
 
     steps:
@@ -28,7 +28,7 @@ jobs:
       run: ./build ${{ matrix.config.build_cmd }}
 
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         path: c:/buildroot/archives/${{ matrix.config.artifact }}
         name: ${{ matrix.config.artifact }}
@@ -54,7 +54,7 @@ jobs:
       run: |
         echo "${{ steps.create_release.outputs.upload_url }}" > ./upload_url
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         path: ./upload_url
         name: upload_url
@@ -69,20 +69,20 @@ jobs:
         config:
         - {
             name: "x86_64 posix seh ucrt",
-            artifact: "x86_64-14.2.0-release-posix-seh-ucrt-rt_v12-rev0.7z"
+            artifact: "x86_64-15.2.0-release-posix-seh-ucrt-rt_v13-rev0.7z"
           }
 
     needs: release
 
     steps:
     - name: Download artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ matrix.config.artifact }}
         path: ./
 
     - name: Download URL
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: upload_url
         path: ./
