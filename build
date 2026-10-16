@@ -90,6 +90,7 @@ readonly RUN_ARGS="$@"
 	echo "    --src-upload               - upload sources archive to sf-project"
 	echo "    --sf-user=<username>       - username to upload to sf-project"
 	echo "    --sf-pass=<user_pass>      - password to upload to sf-project"
+	echo "    --gnu-url-prefix='<url>'   - URL prefix of a GNU mirror server to use (default: https://ftpmirror.gnu.org/gnu)"
 	echo "    --cflags='<flags>'         - additional CFLAGS"
 	echo "    --cxxflags='<flags>'       - additional CXXFLAGS"
 	echo "    --cppflags='<flags>'       - additional CPPFLAGS"
@@ -181,17 +182,20 @@ readonly RUN_ARGS="$@"
 	echo "    gcc-13.2.0 (13.2.0 release)"
 	echo "    gcc-13.3.0 (13.3.0 release)"
 	echo "    gcc-13.4.0 (13.4.0 release)"
-	echo "    gcc-13-branch (currently 13.4.1-prerelease)"
+	echo "    gcc-13.5.0 (13.5.0 release)"
+	echo "    gcc-13-branch (currently 13.5.1-prerelease)"
 	echo "    gcc-14.1.0 (14.1.0 release)"
 	echo "    gcc-14.2.0 (14.2.0 release)"
 	echo "    gcc-14.3.0 (14.3.0 release)"
-	echo "    gcc-14-branch (currently 14.3.1-prerelease)"
+	echo "    gcc-14.4.0 (14.4.0 release)"
+	echo "    gcc-14-branch (currently 14.4.1-prerelease)"
 	echo "    gcc-15.1.0 (15.1.0 release)"
 	echo "    gcc-15.2.0 (15.2.0 release)"
 	echo "    gcc-15.3.0 (15.3.0 release)"
 	echo "    gcc-15-branch (currently 15.3.1-prerelease)"
 	echo "    gcc-16.1.0 (16.1.0 release)"
-	echo "    gcc-16-branch (currently 16.1.1-prerelease)"
+	echo "    gcc-16.2.0 (16.2.0 release)"
+	echo "    gcc-16-branch (currently 16.2.1-prerelease)"
 	echo "    gcc-trunk (currently 17.0.0-snapshot)"
 
 	exit 0
@@ -449,6 +453,10 @@ while [[ $# > 0 ]]; do
 		--src-upload) UPLOAD_SOURCES=yes ;;
 		--sf-user=*) SF_USER=${1/--sf-user=/} ;;
 		--sf-pass=*) SF_PASSWORD=${1/--sf-pass=/} ;;
+		--gnu-url-prefix=*)
+			GNU_URL_PREFIX=${1/--gnu-url-prefix=/}
+			GNU_URL_PREFIX=${GNU_URL_PREFIX%/}
+		;;
 		--debug-upload) DEBUG_UPLOAD=yes ;;
 		--short-output) SHORT_OUTPUT=yes ;;
 		--logviewer-command=*) LOGVIEWER=${1/--logviewer-command=/} ;;
