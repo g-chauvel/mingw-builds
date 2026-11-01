@@ -61,6 +61,7 @@ PKG_PATCHES=(
 	gcc/gcc-13-mcf-sjlj-avoid-infinite-recursion.patch
 	gcc/function-honour-over-alignment-in-align_stack_local.patch
 	gcc/return-256-512-bit-vectors-in-registers-x86_64-MS-ABI.patch
+	gcc/gcc-16-libstdcxx-write-int-max.patch
 )
 
 #
