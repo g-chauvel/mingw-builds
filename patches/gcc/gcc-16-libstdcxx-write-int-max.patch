@@ -1,0 +1,45 @@
+libstdc++: Limit the size of each write on Windows
+
+_write takes an unsigned int count and returns an int. In xwrite, a count
+above INT_MAX returns a negative value, __nleft becomes a multiple of 2^32
+and the next calls are _write(fd, s, 0), so the loop never ends.
+
+Limit each call to INT_MAX, as _GLIBCXX_MAX_READ_SIZE does for read.
+
+libstdc++-v3/ChangeLog:
+
+	* config/io/basic_file_stdio.cc (xwrite): Limit each write to
+	_GLIBCXX_MAX_WRITE_SIZE if that macro is defined.
+	* config/os/mingw32-w64/os_defines.h (_GLIBCXX_MAX_WRITE_SIZE):
+	Define to INT_MAX.
+
+diff --git a/libstdc++-v3/config/io/basic_file_stdio.cc b/libstdc++-v3/config/io/basic_file_stdio.cc
+index 669215e..8b1885b 100644
+--- a/libstdc++-v3/config/io/basic_file_stdio.cc
++++ b/libstdc++-v3/config/io/basic_file_stdio.cc
+@@ -138,7 +138,12 @@ namespace
+ 	if (__ret == 0 && ferror(__file))
+ 	  break;
+ #else
+-	const std::streamsize __ret = write(__fd, __s, __nleft);
++	std::streamsize __count = __nleft;
++#ifdef _GLIBCXX_MAX_WRITE_SIZE
++	if (__builtin_expect(__count > _GLIBCXX_MAX_WRITE_SIZE, 0))
++	  __count = _GLIBCXX_MAX_WRITE_SIZE;
++#endif
++	const std::streamsize __ret = write(__fd, __s, __count);
+ 	if (__ret == -1L && errno == EINTR)
+ 	  continue;
+ 	if (__ret == -1L)
+diff --git a/libstdc++-v3/config/os/mingw32-w64/os_defines.h b/libstdc++-v3/config/os/mingw32-w64/os_defines.h
+index 6d4dd9b..47f9991 100644
+--- a/libstdc++-v3/config/os/mingw32-w64/os_defines.h
++++ b/libstdc++-v3/config/os/mingw32-w64/os_defines.h
+@@ -100,4 +100,7 @@
+ // Windows does not support exporting thread-local data.
+ #define _GLIBCXX_NO_EXTERN_THREAD_LOCAL 1
+ 
++// _write takes an unsigned int count but returns an int.
++#define _GLIBCXX_MAX_WRITE_SIZE __INT_MAX__
++
+ #endif
